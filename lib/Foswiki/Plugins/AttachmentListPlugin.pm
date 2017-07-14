@@ -22,8 +22,8 @@ use Foswiki::Meta;
 use Foswiki::Plugins::AttachmentListPlugin::FileData;
 use Foswiki::Plugins::TopicDataHelperPlugin;
 
-our $VERSION = '$Rev$';
-our $RELEASE = '1.5.0';
+our $VERSION = '1.6';
+our $RELEASE = '14 July 2017';
 our $SHORTDESCRIPTION =
 'Displays a formattable list of topic attachments - from any topic - anywhere in a topic';
 our $NO_PREFS_IN_TOPIC = 1;
@@ -419,7 +419,7 @@ sub _formatFileData {
         my $fileExtension = $fileData->{extension};
         $fileExtension = ''
           if $fileExtension eq
-              'none';    # do not use the extension placeholder for formatting
+          'none';    # do not use the extension placeholder for formatting
         $listedExtensions{$fileExtension} = 1
           if ($fileExtension)
           ;   # add current attachment extension for display for $fileExtensions
@@ -476,13 +476,10 @@ sub _formatFileData {
             $s =~ s/\$hidden/$hiddenStr/g;
         }
 
-        my $webEnc = $fileData->{web};
-        $webEnc =~ s{([^-_/.a-zA-Z0-9])}{sprintf("%%%02x",ord($1))}eg;
-        my $topicEnc = $fileData->{topic};
-        $topicEnc =~ s{([^-_/.a-zA-Z0-9])}{sprintf("%%%02x",ord($1))}eg;
-        my $fileEnc = $fileData->{name};
-        $fileEnc =~ s{([^-_/.a-zA-Z0-9])}{sprintf("%%%02x",ord($1))}eg;
-        my $fileUrl = "$pubUrl/$webEnc/$topicEnc/$fileEnc";
+        my $webEnc   = Foswiki::urlEncode( $fileData->{web} );
+        my $topicEnc = Foswiki::urlEncode( $fileData->{topic} );
+        my $fileEnc  = Foswiki::urlEncode( $fileData->{name} );
+        my $fileUrl  = "$pubUrl/$webEnc/$topicEnc/$fileEnc";
 
         $s =~ s/\$fileUrl/$fileUrl/g;
         $s =~ s/\$fileTopic/$fileData->{topic}/g;
